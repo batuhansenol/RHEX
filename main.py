@@ -95,7 +95,7 @@ if args.list_keys:
         
 new_hex = generator.create(length=length)
 copy(new_hex)
-ui.info(f"New key is: {color_functions.red(new_hex)}")
+ui.info(f"New key is: {color_functions.green(new_hex)}")
 ui.info("Copied to clipboard!")
 print()
 

@@ -1,71 +1,135 @@
-# RHex
+# RHEX
 
 ![logo](logo.png)
 
-RHex is a simple Python-based key/password manager. This project provides secure key generation, encrypted storage, key listing, and a reset option for all stored data.
+**RHEX** is a lightweight and secure command-line password and key manager written in Python. It is designed to provide fast, encrypted local storage with a simple and intuitive interface. RHEX combines modern cryptographic practices with a minimal design, making it suitable for users who value both security and simplicity.
+
+---
 
 ## Features
 
-- Generates a new key and copies it to the clipboard
-- Stores keys encrypted
-- Requires a master key for access control
-- Creates encrypted backups
-- Supports improved security mode using `argon2`
+- Secure local password and key storage
+- AES-GCM authenticated encryption
+- Cryptographically secure random key generation
+- Automatic clipboard copy after key generation
+- Master password protection
+- Optional Argon2id verification mode
+- Encrypted backup support
+- Configurable through `config.toml`
+- Lightweight and fast command-line interface
+
+---
+
+## Why RHEX?
+
+RHEX was built with a simple philosophy: password management should be secure, straightforward, and free from unnecessary complexity.
+
+Unlike many larger password managers, RHEX focuses on local storage and a minimal dependency footprint while still implementing modern encryption standards. Its clean workflow and configurable behavior make it suitable for both everyday use and educational purposes.
+
+---
+
+## Security
+
+Security is the primary goal of RHEX.
+
+All stored data is encrypted using **AES-GCM**, providing both confidentiality and integrity for stored information.
+
+Master password verification supports two modes:
+
+- SHA-256 (default)
+- Argon2id (recommended)
+
+Argon2id provides significantly improved resistance against brute-force attacks and is recommended whenever possible.
+
+> **Security Notice**
+>
+> RHEX uses modern cryptographic techniques. However, like any security software, users are encouraged to review the source code before relying on it for protecting highly sensitive information.
+
+---
 
 ## Requirements
 
-- Python 3.11 or higher
-- The following Python packages:
-  - `colorama`
-  - `pyfiglet`
-  - `pyperclip`
-  - `pyfastfile`
-  - `argon2-cffi`
+- Python 3.11 or newer
 
-## Installation
+Required packages:
 
-Install dependencies from the bundled `requirements.txt` file:
+- colorama
+- pyfiglet
+- pyperclip
+- pyfastfile
+- argon2-cffi
+
+Install dependencies using:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-If the application detects missing dependencies at startup, it will attempt to install them automatically from `requirements.txt` and then exit.
+If required packages are missing, RHEX can automatically install them from `requirements.txt` during startup.
 
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/batuhansenol/RHEX.git
+```
+
+Enter the project directory:
+
+```bash
+cd RHEX
+```
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+---
 
 ## Usage
 
-Run the commands from the project root directory.
-
-### Create a master key (first run)
+### Create a master password
 
 ```bash
-python main.py --new-master-key <master_key>
+python main.py --new-master-key <master_password>
 ```
 
 ### Generate and save a new key
-
-When run without extra arguments, the application generates a new key and prompts for a password and name.
 
 ```bash
 python main.py
 ```
 
-### List saved keys
+The application will:
+
+1. Request the master password.
+2. Ask for a name.
+3. Generate a secure random key.
+4. Encrypt and save the entry.
+5. Copy the generated key to the clipboard.
+
+### List stored entries
 
 ```bash
 python main.py --list-keys
 ```
 
-### Reset all data
+### Delete all stored data
 
 ```bash
 python main.py --delete-all
 ```
 
+---
+
 ## Configuration
 
-The `config.toml` file controls application behavior. Example:
+Example `config.toml`:
 
 ```toml
 [app]
@@ -92,28 +156,77 @@ hash_len = 32
 salt_len = 16
 ```
 
-- `length`: Length of generated keys
-- `master_key_length`: Suggested length for the master key
-- `encryption_mode`: Encryption mode used for file encryption
-- `security_mode`: If `true`, the master key is verified with `argon2`; if `false`, SHA-256 is used
+### Configuration Options
 
-## Project structure
+| Setting | Description |
+|----------|-------------|
+| `length` | Length of generated keys |
+| `master_key_length` | Recommended master password length |
+| `security_mode` | Enables Argon2id verification |
+| `encryption_mode` | Encryption algorithm used for stored data |
 
-- `main.py`: Main application file
-- `banner.py`: Displays the application banner
-- `color_functions.py`: Provides colored terminal output
-- `password_verification.py`: Handles password verification logic
-- `save_and_backup.py`: Manages save and backup operations
-- `ui.py`: Handles user interaction
-- `generator.py`: Generates random keys
-- `padding.py`: Performs padding operations
-- `file_path.py`: Defines data file paths
-- `data/`: Directory for data and backup files
+---
 
-## Notes
+## Project Structure
 
-- `data/key.txt` stores the master key hash or encrypted key data.
-- `data/data.enc` stores the encrypted key list.
-- `data/backup.zip` contains backup files.
+```text
+RHEX/
+│
+├── main.py
+├── banner.py
+├── generator.py
+├── ui.py
+├── password_verification.py
+├── save_and_backup.py
+├── padding.py
+├── color_functions.py
+├── file_path.py
+├── config.toml
+├── requirements.txt
+├── logo.png
+│
+└── data/
+    ├── data.enc
+    ├── key.txt
+    └── backup.zip
+```
 
-> This project is intended as a small password/key manager. Adjust `config.toml` settings to match your needs.
+---
+
+## Data Files
+
+| File | Description |
+|------|-------------|
+| `data/data.enc` | Encrypted password database |
+| `data/key.txt` | Stores the master password hash |
+| `data/backup.zip` | Encrypted backup archive |
+
+---
+
+## Performance
+
+RHEX is designed to start quickly and keep resource usage low while maintaining strong security. By focusing on a lightweight architecture and efficient local storage, it provides a responsive experience even on modest hardware.
+
+---
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+
+See the `LICENSE` file for more information.
+
+---
+
+## Contributing
+
+Contributions, bug reports, feature suggestions, and pull requests are welcome.
+
+If you find a bug or have an idea for improving RHEX, feel free to open an issue or submit a pull request.
+
+---
+
+## Disclaimer
+
+RHEX is provided **as is**, without warranty of any kind.
+
+Although every effort has been made to implement secure cryptographic practices, users should always keep backups of important data and remember their master password. Losing the master password may result in permanent loss of access to encrypted data.
