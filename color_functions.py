@@ -11,3 +11,5 @@ def red(data:str):
 def yellow(data:str):
     return (Fore.YELLOW + data + Fore.RESET)
 
+def blue(data:str):
+    return (Fore.BLUE + data + Fore.RESET)

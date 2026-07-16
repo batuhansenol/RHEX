@@ -1,3 +1,9 @@
+from Crypto.Util.Padding import pad as security_pad
+import tomllib
+
+with open("config.toml", "rb") as f:
+    config = tomllib.load(f)
+
 SIZES = (16, 24, 32)
 
 
@@ -8,7 +14,7 @@ def _target_size(length: int, sizes=SIZES) -> int:
     raise ValueError(f"Data exceeds {sizes[-1]} bytes, not supported (length={length})")
 
 
-def pad(data: str, sizes=SIZES) -> bytes:
+def pad(data: str) -> bytes:
     """
     PKCS7-style padding.
     Always returns bytes, regardless of whether padding was needed.
@@ -17,6 +23,8 @@ def pad(data: str, sizes=SIZES) -> bytes:
     hash256(pad(...)) (hashlib requires bytes, not str) whenever the
     password length was exactly 16, 24, or 32 bytes.
     """
+    sizes = SIZES
+    
     raw = data.encode("utf-8")
     length = len(raw)
     size = _target_size(length, sizes)
@@ -25,7 +33,10 @@ def pad(data: str, sizes=SIZES) -> bytes:
     if pad_len == 0:
         return raw
 
-    return raw + bytes([pad_len]) * pad_len
+    if config["advanced_settings"]["security_mode"]:
+        return security_pad(raw, 32)
+    else:
+        return raw + bytes([pad_len]) * pad_len
 
 
 def unpad(data: bytes, sizes=SIZES) -> str:

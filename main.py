@@ -33,6 +33,9 @@ security_mode = config["advanced_settings"]["security_mode"]
 
 if security_mode:
     ui.info(f"Security mode {color_functions.green('activated')}.")
+else:
+    ui.info(f"Security mode {color_functions.red('deactivated')}.")
+ui.info("If you want to make changes, you need to edit config.toml. \n")
 
 parser = argparse.ArgumentParser()
 
