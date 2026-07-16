@@ -1,5 +1,33 @@
-from Crypto.Util.Padding import pad as security_pad
+
 import tomllib
+import base64
+import re
+from argon2.low_level import hash_secret_raw, Type
+import pyfastfile, file_path
+
+_ENCODED_RE = re.compile(
+    r"^\$argon2id\$v=\d+\$m=(\d+),t=(\d+),p=(\d+)\$([^$]+)\$"
+)
+
+
+def derive_key(password: bytes, hash_len: int) -> bytes:
+    match = _ENCODED_RE.match(pyfastfile.read(path=file_path.key_file))
+    if not match:
+        raise ValueError("stored_hash is not in the expected Argon2id format.")
+
+    memory_cost, time_cost, parallelism, salt_b64 = match.groups()
+    salt = base64.b64decode(salt_b64 + "=" * ((-len(salt_b64)) % 4))
+
+    return hash_secret_raw(
+        secret=password,
+        salt=salt,
+        time_cost=int(time_cost),
+        memory_cost=int(memory_cost),
+        parallelism=int(parallelism),
+        hash_len=hash_len,
+        type=Type.ID,
+    )
+
 
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
@@ -34,7 +62,7 @@ def pad(data: str) -> bytes:
         return raw
 
     if config["advanced_settings"]["security_mode"]:
-        return security_pad(raw, 32)
+        return derive_key(password=raw, hash_len=32)
     else:
         return raw + bytes([pad_len]) * pad_len
 
