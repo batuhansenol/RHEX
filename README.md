@@ -58,6 +58,7 @@ Required packages:
 - pyperclip
 - pyfastfile
 - argon2-cffi
+- pycryptodome
 
 Install dependencies using:
 
@@ -143,7 +144,7 @@ master_key_length = 10
 encryption_mode = "gcm"
 
 [advanced_settings]
-security_mode = false
+security_mode = true
 delete_all_operation_sleep_time = 0
 list_all_operation_sleep_time = 0
 add_key_sleep_time = 0
