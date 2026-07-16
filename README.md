@@ -22,9 +22,9 @@
 
 ## Release Notes
 
-### 0.0.4
+### 0.0.5
 
-- Added README update for the `0.0.4` release.
+- Added README update for the `0.0.5` release.
 - Included documentation polish and minor clarifications.
 
 ---
