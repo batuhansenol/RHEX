@@ -20,6 +20,15 @@
 
 ---
 
+## Release Notes
+
+### 0.0.4
+
+- Added README update for the `0.0.4` release.
+- Included documentation polish and minor clarifications.
+
+---
+
 ## Why RHEX?
 
 RHEX was built with a simple philosophy: password management should be secure, straightforward, and free from unnecessary complexity.
