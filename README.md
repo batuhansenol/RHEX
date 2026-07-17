@@ -207,49 +207,6 @@ salt_len = 16
 
 ---
 
-## Project Structure
-
-```text
-RHEX/
-├── banner.py
-├── color_functions.py
-├── config.toml
-├── file_path.py
-├── generator.py
-├── main.py
-├── padding.py
-├── password_verification.py
-├── save_and_backup.py
-├── ui.py
-├── README.md
-├── requirements.txt
-└── data/
-    ├── key.txt
-    ├── data.enc
-    ├── backup.zip
-    └── data.txt
-```
-
-├── banner.py
-├── generator.py
-├── ui.py
-├── password_verification.py
-├── save_and_backup.py
-├── padding.py
-├── color_functions.py
-├── file_path.py
-├── config.toml
-├── requirements.txt
-├── logo.png
-│
-└── data/
-    ├── data.enc
-    ├── key.txt
-    └── backup.zip
-```
-
----
-
 ## Data Files
 
 | File | Description |
