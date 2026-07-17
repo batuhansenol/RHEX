@@ -103,7 +103,13 @@ ui.info("Copied to clipboard!")
 print()
 
 ui.info("Password to save.")
+ui.info("If you do not want to save, simply press Enter.")
 password = ui.pinput()
+
+if not password:
+    print()
+    ui.info("See you later!")
+    sys.exit()
 
 if not password_verification.check(password, security_mode=security_mode):
     ui.error("Your password is incorrect.")
@@ -111,7 +117,7 @@ if not password_verification.check(password, security_mode=security_mode):
     sys.exit()
 
 ui.info("Name to save.")
-name = ui.pinput()
+name = ui.pinput(is_name=True)
 
 save_and_backup.save(hex=new_hex, name=name, key=password, mode=mode)
 print()

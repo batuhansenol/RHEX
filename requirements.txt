@@ -3,4 +3,3 @@ pyfiglet
 pyperclip
 pyfastfile
 argon2-cffi
-pycryptodome

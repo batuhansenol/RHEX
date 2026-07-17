@@ -5,6 +5,13 @@ name = "RHEX"
 length = 20
 master_key_length = 10
 
+# Output password configuration.
+
+lowercase_letters = true
+uppercase_letters = false
+special_characters = false
+figures = true
+
 [encryption]
 encryption_mode = "gcm"
 

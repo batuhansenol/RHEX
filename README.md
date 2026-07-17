@@ -2,21 +2,20 @@
 
 ![logo](logo.png)
 
-**RHEX** is a lightweight and secure command-line password and key manager written in Python. It is designed to provide fast, encrypted local storage with a simple and intuitive interface. RHEX combines modern cryptographic practices with a minimal design, making it suitable for users who value both security and simplicity.
+**RHEX** is a lightweight and secure command-line password and key manager written in Python. It provides encrypted local storage, configurable key generation, and a compact CLI workflow for creating, saving, listing, and resetting entries.
 
 ---
 
 ## Features
 
 - Secure local password and key storage
-- AES-GCM authenticated encryption
-- Cryptographically secure random key generation
-- Automatic clipboard copy after key generation
-- Master password protection
-- Optional Argon2id verification mode
-- Encrypted backup support
-- Configurable through `config.toml`
-- Lightweight and fast command-line interface
+- AES-GCM authenticated encryption for stored entries
+- Configurable key length and charset via `config.toml`
+- Automatic clipboard copy after new key generation
+- Master password protection with optional Argon2id verification
+- Encrypted backup archive with timestamped snapshots
+- Automatic dependency installation if required packages are missing
+- Fast CLI workflow with `--new-master-key`, `--list-keys`, and `--delete-all`
 
 ---
 
@@ -24,8 +23,11 @@
 
 ### 0.0.5
 
-- Added README update for the `0.0.5` release.
-- Included documentation polish and minor clarifications.
+- Added encrypted backup support with timestamped snapshot copies
+- Added configurable key generation options for lowercase, uppercase, digits, and symbols
+- Added automatic dependency install fallback on startup
+- Added CLI `--new-master-key` option for initial master password creation
+- Improved README documentation and configuration examples
 
 ---
 
@@ -33,7 +35,7 @@
 
 RHEX was built with a simple philosophy: password management should be secure, straightforward, and free from unnecessary complexity.
 
-Unlike many larger password managers, RHEX focuses on local storage and a minimal dependency footprint while still implementing modern encryption standards. Its clean workflow and configurable behavior make it suitable for both everyday use and educational purposes.
+Unlike larger password managers, RHEX focuses on local encrypted storage, a minimal dependency footprint, and a clean command-line experience.
 
 ---
 
@@ -41,18 +43,18 @@ Unlike many larger password managers, RHEX focuses on local storage and a minima
 
 Security is the primary goal of RHEX.
 
-All stored data is encrypted using **AES-GCM**, providing both confidentiality and integrity for stored information.
+All stored data is encrypted using **AES-GCM**, providing both confidentiality and integrity.
 
 Master password verification supports two modes:
 
 - SHA-256 (default)
 - Argon2id (recommended)
 
-Argon2id provides significantly improved resistance against brute-force attacks and is recommended whenever possible.
+When `security_mode` is enabled in `config.toml`, the master password is stored using Argon2id hashing. Otherwise it uses SHA-256 with padded input.
 
 > **Security Notice**
 >
-> RHEX uses modern cryptographic techniques. However, like any security software, users are encouraged to review the source code before relying on it for protecting highly sensitive information.
+> RHEX uses modern cryptographic techniques, but users should review the source code and keep backups of important data separately.
 
 ---
 
@@ -109,7 +111,7 @@ python -m pip install -r requirements.txt
 python main.py --new-master-key <master_password>
 ```
 
-This command is used on first run when no master key exists. After the key is created, use the normal workflow to add, list, or reset entries.
+Use this on first run when no master key exists. After the master key is created, use the standard workflow to generate and save keys.
 
 ### Generate and save a new key
 
@@ -119,11 +121,13 @@ python main.py
 
 The application will:
 
-1. Request the master password.
-2. Ask for a name.
-3. Generate a secure random key.
-4. Encrypt and save the entry.
-5. Copy the generated key to the clipboard.
+1. Verify the master password.
+2. Generate a secure random key.
+3. Copy the new key to the clipboard.
+4. Ask if you want to save the key under a name.
+5. Encrypt and store the entry if confirmed.
+
+If you choose not to save, press Enter when prompted for a password.
 
 ### List stored entries
 
@@ -145,10 +149,10 @@ RHEX stores encrypted files locally in the `data/` folder:
 
 - `data/key.txt` — hashed or Argon2id-hashed master key
 - `data/data.enc` — encrypted password/key database
-- `data/backup.zip` — encrypted backup archive of `data/data.enc`
+- `data/backup.zip` — encrypted backup archive containing historical copies of `data.enc`
 - `data/data.txt` — temporary decrypted file created during operations and deleted afterward
 
-Keep the `data/` folder private. If `security_mode` is enabled in `config.toml`, the master key is stored using Argon2id hashing.
+Keep the `data/` folder private. Enabling `security_mode` stores the master key using Argon2id.
 
 ---
 
@@ -163,6 +167,10 @@ name = "RHEX"
 [key]
 length = 20
 master_key_length = 10
+lowercase_letters = true
+uppercase_letters = false
+special_characters = false
+figures = true
 
 [encryption]
 encryption_mode = "gcm"
@@ -187,8 +195,15 @@ salt_len = 16
 |----------|-------------|
 | `length` | Length of generated keys |
 | `master_key_length` | Recommended master password length |
-| `security_mode` | Enables Argon2id verification |
-| `encryption_mode` | Encryption algorithm used for stored data |
+| `lowercase_letters` | Include lowercase letters in generated keys |
+| `uppercase_letters` | Include uppercase letters in generated keys |
+| `special_characters` | Include symbols in generated keys |
+| `figures` | Include digits in generated keys |
+| `security_mode` | Enables Argon2id master password verification |
+| `encryption_mode` | Encryption mode used for stored data |
+| `delete_all_operation_sleep_time` | Delay after delete-all failure |
+| `list_all_operation_sleep_time` | Delay after list-keys failure |
+| `add_key_sleep_time` | Delay after failed save operation |
 
 ---
 
@@ -196,8 +211,25 @@ salt_len = 16
 
 ```text
 RHEX/
-│
+├── banner.py
+├── color_functions.py
+├── config.toml
+├── file_path.py
+├── generator.py
 ├── main.py
+├── padding.py
+├── password_verification.py
+├── save_and_backup.py
+├── ui.py
+├── README.md
+├── requirements.txt
+└── data/
+    ├── key.txt
+    ├── data.enc
+    ├── backup.zip
+    └── data.txt
+```
+
 ├── banner.py
 ├── generator.py
 ├── ui.py
