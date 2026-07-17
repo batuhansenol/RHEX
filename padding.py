@@ -58,7 +58,7 @@ def pad(data: str) -> bytes:
     size = _target_size(length, sizes)
 
     pad_len = size - length
-    if (pad_len == 0) and (config["advanced_settings"]["security_mode"]):
+    if (pad_len == 0) and (not config["advanced_settings"]["security_mode"]):
         return raw
 
     if config["advanced_settings"]["security_mode"]:

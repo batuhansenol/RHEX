@@ -109,6 +109,8 @@ python -m pip install -r requirements.txt
 python main.py --new-master-key <master_password>
 ```
 
+This command is used on first run when no master key exists. After the key is created, use the normal workflow to add, list, or reset entries.
+
 ### Generate and save a new key
 
 ```bash
@@ -134,6 +136,19 @@ python main.py --list-keys
 ```bash
 python main.py --delete-all
 ```
+
+---
+
+## Data Storage
+
+RHEX stores encrypted files locally in the `data/` folder:
+
+- `data/key.txt` — hashed or Argon2id-hashed master key
+- `data/data.enc` — encrypted password/key database
+- `data/backup.zip` — encrypted backup archive of `data/data.enc`
+- `data/data.txt` — temporary decrypted file created during operations and deleted afterward
+
+Keep the `data/` folder private. If `security_mode` is enabled in `config.toml`, the master key is stored using Argon2id hashing.
 
 ---
 
