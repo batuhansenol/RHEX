@@ -12,7 +12,7 @@ _cfg = config_data()
 _ph = PasswordHasher(
     time_cost=_cfg["argon2"]["time_cost"],
     memory_cost=_cfg["argon2"]["memory_cost"],
-    parallelism=_cfg["parallelism"],
+    parallelism=_cfg["argon2"]["parallelism"],
     hash_len=_cfg["argon2"]["hash_len"],
     salt_len=_cfg["argon2"]["salt_len"],
 )
