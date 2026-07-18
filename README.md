@@ -123,6 +123,8 @@ The application will:
 4. Ask if you want to save the key under a name.
 5. Encrypt and store the entry if confirmed.
 
+If `print_key` is enabled in `config.toml`, the generated key is also printed to the terminal; otherwise only a confirmation message is shown and the key stays clipboard-only.
+
 If you choose not to save, press Enter when prompted for a password.
 
 ### List stored entries
@@ -146,7 +148,7 @@ RHEX stores encrypted files locally in the `data/` folder:
 - `data/key.txt` — hashed or Argon2id-hashed master key
 - `data/data.enc` — encrypted password/key database
 - `data/backup.zip` — encrypted backup archive containing historical copies of `data.enc`
-- `data/data.txt` — temporary decrypted file created during operations and deleted afterward
+- `data/data.txt` — temporary decrypted file created during operations; securely overwritten before being deleted
 
 Keep the `data/` folder private. Enabling `security_mode` stores the master key using Argon2id.
 
@@ -172,6 +174,7 @@ figures = true
 encryption_mode = "gcm"
 
 [advanced_settings]
+print_key = true
 security_mode = true
 delete_all_operation_sleep_time = 0
 list_all_operation_sleep_time = 0
@@ -195,6 +198,7 @@ salt_len = 16
 | `uppercase_letters` | Include uppercase letters in generated keys |
 | `special_characters` | Include symbols in generated keys |
 | `figures` | Include digits in generated keys |
+| `print_key` | Print the generated key to the terminal (disable to keep it clipboard-only) |
 | `security_mode` | Enables Argon2id master password verification |
 | `encryption_mode` | Encryption mode used for stored data |
 | `delete_all_operation_sleep_time` | Delay after delete-all failure |
