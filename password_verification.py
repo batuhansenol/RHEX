@@ -10,11 +10,11 @@ from argon2.exceptions import VerifyMismatchError, InvalidHash
 _cfg = config_data()
 
 _ph = PasswordHasher(
-    time_cost=_cfg["time_cost"],
-    memory_cost=_cfg["memory_cost"],
+    time_cost=_cfg["argon2"]["time_cost"],
+    memory_cost=_cfg["argon2"]["memory_cost"],
     parallelism=_cfg["parallelism"],
-    hash_len=_cfg["hash_len"],
-    salt_len=_cfg["salt_len"],
+    hash_len=_cfg["argon2"]["hash_len"],
+    salt_len=_cfg["argon2"]["salt_len"],
 )
 
 def to_argon2(data: str) -> str:
