@@ -1,9 +1,8 @@
 import secrets
-import tomllib
 import string
+from config import config_data
 
-with open("config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = config_data()
 
 def create(length:int):
     if config["key"]["lowercase_letters"] and config["key"]["figures"] and (not config["key"]["uppercase_letters"]) and (not config["key"]["special_characters"]):

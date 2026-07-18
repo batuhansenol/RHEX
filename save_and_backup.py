@@ -32,6 +32,7 @@ def save(hex:str, name:str, key:str, mode:str):
     pyfastfile.append(path=file_path.data_file, data=(f"[{pyfastfile.count_lines(file_path.data_file)+1}] | [{date.strftime("%Y%m%d_%H%M%S")}] | {name} | {hex}"))
     pyfastfile.enc_encrypt_file(path=file_path.data_file, targetpath=file_path.enc_keys_file, key=key, mode=mode)
     
+    pyfastfile.overwrite(path=file_path.data_file, data=str("Şenol" * (pyfastfile.size(file_path.data_file) // 6 + 1)))
     pyfastfile.delete(file_path.data_file)
     
     copy_file = create_encrypted_copy(path=file_path.enc_keys_file)

@@ -1,9 +1,8 @@
 import pyfiglet
 from color_functions import *
-import tomllib
+from config import config_data
 
-with open("config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = config_data()
 
 print(blue((pyfiglet.figlet_format(config["app"]["name"], font="big")).strip()))
 

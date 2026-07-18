@@ -1,5 +1,5 @@
 
-import tomllib
+from config import config_data
 import base64
 import re
 from argon2.low_level import hash_secret_raw, Type
@@ -29,8 +29,7 @@ def derive_key(password: bytes, hash_len: int) -> bytes:
     )
 
 
-with open("config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = config_data()
 
 SIZES = (16, 24, 32)
 

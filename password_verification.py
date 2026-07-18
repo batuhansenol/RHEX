@@ -3,12 +3,11 @@ import padding
 import hashlib
 import file_path
 
-import tomllib
+from config import config_data
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError, InvalidHash
 
-with open("config.toml", "rb") as f:
-    _cfg = tomllib.load(f)["argon2"]
+_cfg = config_data()
 
 _ph = PasswordHasher(
     time_cost=_cfg["time_cost"],
@@ -33,9 +32,9 @@ def sha256(data:bytes):
 
 def check(password:str, security_mode:bool):
     key = pyfastfile.read(file_path.key_file)
-    padded_password = padding.pad(password)
     
     if not security_mode:
+        padded_password = padding.pad(password)
         return sha256(padded_password) == key
     else:
         return verify_argon2(password, hashed=key)

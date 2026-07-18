@@ -2,7 +2,6 @@
 try:
     import banner
     print()
-    import tomllib
     import password_verification
     import save_and_backup
     import ui
@@ -15,6 +14,7 @@ try:
     import pyfastfile
     from padding import pad
     import time
+    from config import config_data
 except ModuleNotFoundError:
     import subprocess
     import sys 
@@ -23,8 +23,7 @@ except ModuleNotFoundError:
     check=True)
     sys.exit()
 
-with open("config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = config_data()
 
 length = config["key"]["length"]
 master_key_length = config["key"]["master_key_length"]
@@ -106,6 +105,7 @@ if args.list_keys:
     if password_verification.check(password=password, security_mode=security_mode):
         pyfastfile.enc_decrypt_file(path=file_path.enc_keys_file, targetpath=file_path.data_file, key=pad(password))
         print(pyfastfile.read(file_path.data_file))
+        pyfastfile.overwrite(path=file_path.data_file, data=str("Şenol" * (pyfastfile.size(file_path.data_file) // 6 + 1)))
         pyfastfile.delete(file_path.data_file)
         
         sys.exit()
@@ -117,7 +117,10 @@ if args.list_keys:
         
 new_hex = generator.create(length=length)
 copy(new_hex)
-ui.info(f"New key is: {color_functions.green(new_hex)}")
+if config["advanced_settings"]["print_key"]:
+    ui.info(f"New key is: {color_functions.green(new_hex)}")
+else:
+    ui.info("Key is generated.")
 ui.info("Copied to clipboard!")
 print()
 

@@ -1,9 +1,8 @@
 from color_functions import *
-import tomllib
+from config import config_data
 import getpass
 
-with open("config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = config_data()
 
 org_input = input
 

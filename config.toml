@@ -16,6 +16,7 @@ figures = true
 encryption_mode = "gcm"
 
 [advanced_settings]
+print_key = true
 security_mode = true
 delete_all_operation_sleep_time = 0
 list_all_operation_sleep_time = 0
