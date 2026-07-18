@@ -12,22 +12,11 @@
 - AES-GCM authenticated encryption for stored entries
 - Configurable key length and charset via `config.toml`
 - Automatic clipboard copy after new key generation
+- One-time random data generation with `--random`
 - Master password protection with optional Argon2id verification
 - Encrypted backup archive with timestamped snapshots
 - Automatic dependency installation if required packages are missing
-- Fast CLI workflow with `--new-master-key`, `--list-keys`, and `--delete-all`
-
----
-
-## Release Notes
-
-### 0.0.5
-
-- Added encrypted backup support with timestamped snapshot copies
-- Added configurable key generation options for lowercase, uppercase, digits, and symbols
-- Added automatic dependency install fallback on startup
-- Added CLI `--new-master-key` option for initial master password creation
-- Improved README documentation and configuration examples
+- Fast CLI workflow with `--new-master-key`, `--random`, `--list-keys`, and `--delete-all`
 
 ---
 
@@ -69,7 +58,6 @@ Required packages:
 - pyperclip
 - pyfastfile
 - argon2-cffi
-- pycryptodome
 
 Install dependencies using:
 
@@ -108,10 +96,18 @@ python -m pip install -r requirements.txt
 ### Create a master password
 
 ```bash
-python main.py --new-master-key <master_password>
+python main.py --new-master-key
 ```
 
-Use this on first run when no master key exists. After the master key is created, use the standard workflow to generate and save keys.
+Use this on first run when no master key exists. The command prompts you to enter a new master password interactively.
+
+### Generate one-time random data
+
+```bash
+python main.py --random
+```
+
+This prints a generated one-time value, copies it to the clipboard, and exits.
 
 ### Generate and save a new key
 

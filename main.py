@@ -41,17 +41,36 @@ parser = argparse.ArgumentParser()
 
 if not password_verification.master_key_is_valid():
     
-    parser.add_argument("--new-master-key", type=str, default=None, help="Create master key.")
+    parser.add_argument("--new-master-key", action="store_true", help="Create master key.")
+    parser.add_argument("--random", action="store_true", help="Create random data.")
     args = parser.parse_args()
     
-    if not args.new_master_key:
-        ui.error(data=f"Master key {color_functions.red('not found')}. Create a new master key: --new-master-key <key>")
-        ui.info(data=f"Suggested key: --new-master-key {generator.create(master_key_length)}")
+    if (not args.new_master_key) and (not args.random):
+        ui.error(data=f"Master key {color_functions.red('not found')}. Create a new master key: --new-master-key")
+        ui.info(data=f"Suggested key: --random")
         sys.exit()
     
-    save_and_backup.save_master_key(key=args.new_master_key, security_mode=security_mode)
-    ui.info("Master key saved.")
-    sys.exit()
+    if args.new_master_key:
+        ui.info("Enter the Master Password.") 
+        ui.error("If you forget, there is no turning back.")
+        
+        key = ui.pinput()
+        print()
+    
+        save_and_backup.save_master_key(key=key, security_mode=security_mode)
+        ui.info("Master key saved.")
+        ui.info("Welcome aboard!")
+        print()
+        sys.exit()
+        
+    if args.random:
+        ui.info("Unique, random data suitable for use as a key.")
+        data = generator.create(20)
+        ui.info(f"Data: {color_functions.green(data=data)}")
+        copy(data)
+        ui.info("Copied to clipboard!")
+        sys.exit()
+        
     
 parser.add_argument("--delete-all", action="store_true", help="Reset all data.")
 parser.add_argument("--list-keys", action="store_true", help="List keys.")
