@@ -15,7 +15,8 @@
 - One-time random data generation with `--random`
 - Master password protection with optional Argon2id verification
 - Encrypted backup archive with timestamped snapshots
-- Automatic dependency installation if required packages are missing
+- Startup banner can optionally print a GitHub link
+- Displays install instructions when required packages are missing
 - Fast CLI workflow with `--new-master-key`, `--random`, `--list-keys`, and `--delete-all`
 
 ---
@@ -65,7 +66,7 @@ Install dependencies using:
 python -m pip install -r requirements.txt
 ```
 
-If required packages are missing, RHEX can automatically install them from `requirements.txt` during startup.
+If required packages are missing, RHEX shows a helpful message and recommends installing dependencies from `requirements.txt`.
 
 ---
 
@@ -139,6 +140,8 @@ python main.py --list-keys
 python main.py --delete-all
 ```
 
+This command now requires the master password and an additional on-screen verification code to confirm the reset before all stored data is deleted.
+
 ---
 
 ## Data Storage
@@ -175,7 +178,9 @@ encryption_mode = "gcm"
 
 [advanced_settings]
 print_key = true
+print_github_link = true
 security_mode = true
+print_secure_mod_information = true
 delete_all_operation_sleep_time = 0
 list_all_operation_sleep_time = 0
 add_key_sleep_time = 0
@@ -198,7 +203,9 @@ salt_len = 16
 | `uppercase_letters` | Include uppercase letters in generated keys |
 | `special_characters` | Include symbols in generated keys |
 | `figures` | Include digits in generated keys |
-| `print_key` | Print the generated key to the terminal (disable to keep it clipboard-only) |
+| `print_key` | Print generated key to terminal as well as clipboard |
+| `print_github_link` | Print the GitHub repository link on startup |
+| `print_secure_mod_information` | Show whether security mode is active and config info |
 | `security_mode` | Enables Argon2id master password verification |
 | `encryption_mode` | Encryption mode used for stored data |
 | `delete_all_operation_sleep_time` | Delay after delete-all failure |

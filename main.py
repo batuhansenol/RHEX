@@ -16,11 +16,13 @@ try:
     import time
     from config import config_data
 except ModuleNotFoundError:
-    import subprocess
     import sys 
-    subprocess.run(
-    [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
-    check=True)
+    import ui
+
+    ui.error("The dependencies required for the program could not be found.")
+    ui.info("Recommended: pip install -r requirements.txt")
+    print()
+
     sys.exit()
 
 config = config_data()
@@ -30,11 +32,13 @@ master_key_length = config["key"]["master_key_length"]
 mode = config["encryption"]["encryption_mode"]
 security_mode = config["advanced_settings"]["security_mode"]
 
-if security_mode:
-    ui.info(f"Security mode {color_functions.green('activated')}.")
-else:
-    ui.info(f"Security mode {color_functions.red('deactivated')}.")
-ui.info("If you want to make changes, you need to edit config.toml. \n")
+if config["advanced_settings"]["print_secure_mod_information"]:
+
+    if security_mode:
+        ui.info(f"Security mode {color_functions.green('activated')}.")
+    else:
+        ui.info(f"Security mode {color_functions.red('deactivated')}.")
+    ui.info("If you want to make changes, you need to edit config.toml. \n")
 
 parser = argparse.ArgumentParser()
 
@@ -85,11 +89,24 @@ if args.delete_all:
     print()
     
     if password_verification.check(password=password, security_mode=security_mode):
-        pyfastfile.delete(file_path.backup_file)
-        pyfastfile.delete(file_path.enc_keys_file)
-        pyfastfile.overwrite(file_path.key_file, data="")
-        ui.info("Data has been reset.")
         
+        verification_code = generator.create(3)
+        
+        ui.info(f"Type this for additional verification: {color_functions.green(verification_code)}")
+        
+        input_code = ui.pinput(is_name=True)
+        print()
+        
+        if input_code == verification_code:
+        
+            pyfastfile.delete(file_path.backup_file)
+            pyfastfile.delete(file_path.enc_keys_file)
+            pyfastfile.overwrite(file_path.key_file, data="")
+            ui.info("Data has been reset.")
+            
+            sys.exit()
+            
+        ui.error("Verification is failed.")
         sys.exit()
     
     ui.error("Your password is incorrect.")
