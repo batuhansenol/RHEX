@@ -155,6 +155,10 @@ else:
 ui.info("Copied to clipboard!")
 print()
 
+if not config["advanced_settings"]["save"]:
+    ui.info("See you later.")
+    sys.exit()
+
 ui.info("Password to save.")
 ui.info("If you do not want to save, simply press Enter.")
 password = ui.pinput()

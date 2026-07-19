@@ -16,6 +16,7 @@ figures = true
 encryption_mode = "gcm"
 
 [advanced_settings]
+save = true
 print_key = true
 print_github_link = true
 security_mode = true
