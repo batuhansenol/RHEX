@@ -17,7 +17,7 @@ def create_encrypted_copy(path: str) -> str:
 
     shutil.copy2(path, encrypted_path)
 
-    return "data/" + encrypted_filename
+    return encrypted_path
 
 def save(hex:str, name:str, key:str, mode:str):
     
@@ -64,7 +64,7 @@ def save(hex:str, name:str, key:str, mode:str):
     
     if pyfastfile.exists(path=file_path.backup_file):
         if pyfastfile.size(file_path.backup_file) != 0:
-            pyfastfile.zip_append(zip_file=file_path.backup_file, file=file_path.enc_keys_file)
+            pyfastfile.zip_append(zip_file=file_path.backup_file, file=copy_file)
         else:
             pyfastfile.zip_create(path=copy_file, targetpath=file_path.backup_file)         
     else:
