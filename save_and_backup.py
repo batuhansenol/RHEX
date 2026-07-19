@@ -5,6 +5,7 @@ import os
 import shutil
 from padding import pad
 from password_verification import sha256, to_argon2
+import base64
 
 def create_encrypted_copy(path: str) -> str:
     original_name = os.path.splitext(os.path.basename(path))[0]
@@ -24,22 +25,46 @@ def save(hex:str, name:str, key:str, mode:str):
     
     key = pad(key)
     
+
+    
     if pyfastfile.exists(file_path.enc_keys_file):
-        pyfastfile.enc_decrypt_file(path=file_path.enc_keys_file, targetpath=file_path.data_file, key=key)
+        text = pyfastfile.read(file_path.enc_keys_file).strip()
+
+        if text:
+            encrypted = base64.b64decode(text)
+            decrypted = pyfastfile.decrypt_bytes(
+                data=encrypted,
+                key=key
+            ).decode()
+        else:
+            decrypted = ""
     else:
-        pyfastfile.overwrite(path=file_path.data_file, data="")
-    pyfastfile.delete(file_path.enc_keys_file)
-    pyfastfile.append(path=file_path.data_file, data=(f"[{pyfastfile.count_lines(file_path.data_file)+1}] | [{date.strftime("%Y%m%d_%H%M%S")}] | {name} | {hex}"))
-    pyfastfile.enc_encrypt_file(path=file_path.data_file, targetpath=file_path.enc_keys_file, key=key, mode=mode)
-    
-    pyfastfile.overwrite(path=file_path.data_file, data=str("Şenol" * (pyfastfile.size(file_path.data_file) // 6 + 1)))
-    pyfastfile.delete(file_path.data_file)
-    
+        pyfastfile.touch(path=file_path.enc_keys_file)
+        decrypted = ""
+
+    decrypted += (
+        "\n"
+        f"[{date.strftime('%Y%m%d_%H%M%S')}] | "
+        f"{name} | {hex}"
+    )
+
+    encrypted = pyfastfile.encrypt_bytes(
+        data=decrypted,
+        key=key,
+    )
+
+    encoded = base64.b64encode(encrypted).decode("ascii")
+
+    pyfastfile.overwrite(
+        path=file_path.enc_keys_file,
+        data=encoded
+    )
+
     copy_file = create_encrypted_copy(path=file_path.enc_keys_file)
     
     if pyfastfile.exists(path=file_path.backup_file):
         if pyfastfile.size(file_path.backup_file) != 0:
-            pyfastfile.zip_append(path=copy_file, target=file_path.backup_file)
+            pyfastfile.zip_append(zip_file=file_path.backup_file, file=file_path.enc_keys_file)
         else:
             pyfastfile.zip_create(path=copy_file, targetpath=file_path.backup_file)         
     else:

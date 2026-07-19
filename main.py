@@ -15,6 +15,7 @@ try:
     from padding import pad
     import time
     from config import config_data
+    import base64
 except ModuleNotFoundError:
     import sys 
     import ui
@@ -114,23 +115,36 @@ if args.delete_all:
     sys.exit()
     
 if args.list_keys:
-    
+
     ui.info("Password to list keys.")
     password = ui.pinput()
     print()
-    
+
     if password_verification.check(password=password, security_mode=security_mode):
-        pyfastfile.enc_decrypt_file(path=file_path.enc_keys_file, targetpath=file_path.data_file, key=pad(password))
-        print(pyfastfile.read(file_path.data_file))
-        pyfastfile.overwrite(path=file_path.data_file, data=str("Şenol" * (pyfastfile.size(file_path.data_file) // 6 + 1)))
-        pyfastfile.delete(file_path.data_file)
-        
-        sys.exit()
-        
+        try:
+            encoded = pyfastfile.read(file_path.enc_keys_file).strip()
+
+            if not encoded:
+                ui.info("No keys found.")
+                sys.exit()
+
+            encrypted = base64.b64decode(encoded)
+
+            decrypted = pyfastfile.decrypt_bytes(
+                data=encrypted,
+                key=pad(password)
+            ).decode()
+
+            print(decrypted.strip())
+            sys.exit()
+
+        except Exception as e:
+            ui.error(f"Failed to decrypt keys: {e}")
+            sys.exit(1)
+
     ui.error("Your password is incorrect.")
     time.sleep(config["advanced_settings"]["list_all_operation_sleep_time"])
     sys.exit()
-    
         
 new_hex = generator.create(length=length)
 copy(new_hex)

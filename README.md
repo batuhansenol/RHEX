@@ -18,6 +18,8 @@
 - Startup banner can optionally print a GitHub link
 - Displays install instructions when required packages are missing
 - Fast CLI workflow with `--new-master-key`, `--random`, `--list-keys`, and `--delete-all`
+- Encrypted entries are stored as Base64-encoded ciphertext in `data/data.enc`
+- `--list-keys` decrypts and prints entries directly without creating a temporary plaintext file
 
 ---
 
@@ -134,6 +136,8 @@ If you choose not to save, press Enter when prompted for a password.
 python main.py --list-keys
 ```
 
+This command decrypts the Base64-encoded ciphertext from `data/data.enc` and prints the stored entries directly.
+
 ### Delete all stored data
 
 ```bash
@@ -149,9 +153,8 @@ This command now requires the master password and an additional on-screen verifi
 RHEX stores encrypted files locally in the `data/` folder:
 
 - `data/key.txt` — hashed or Argon2id-hashed master key
-- `data/data.enc` — encrypted password/key database
-- `data/backup.zip` — encrypted backup archive containing historical copies of `data.enc`
-- `data/data.txt` — temporary decrypted file created during operations; securely overwritten before being deleted
+- `data/data.enc` — Base64-encoded encrypted password/key database
+- `data/backup.zip` — encrypted backup archive containing historical copies of `data/data.enc`
 
 Keep the `data/` folder private. Enabling `security_mode` stores the master key using Argon2id.
 
