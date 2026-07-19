@@ -49,7 +49,7 @@ def save(hex:str, name:str, key:str, mode:str):
     )
 
     encrypted = pyfastfile.encrypt_bytes(
-        data=decrypted,
+        data=decrypted.encode("utf-8"),
         key=key,
     )
 
